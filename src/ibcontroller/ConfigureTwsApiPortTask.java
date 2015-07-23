@@ -20,14 +20,17 @@ package ibcontroller;
 
 import java.awt.Component;
 import java.awt.Container;
+
 import javax.swing.*;
 
 class ConfigureTwsApiPortTask implements Runnable{
     
     final int mPortNumber;
+	final String mReadOnlyAPI;
     
-    ConfigureTwsApiPortTask(int portNumber) {
+    ConfigureTwsApiPortTask(int portNumber, String readOnlyAPI) {
         mPortNumber = portNumber;
+        mReadOnlyAPI = readOnlyAPI;
     }
 
     @Override
@@ -37,7 +40,7 @@ class ConfigureTwsApiPortTask implements Runnable{
             
             GuiExecutor.instance().execute(new Runnable(){
                 @Override
-                public void run() {configure(configDialog, mPortNumber);}
+                public void run() {configure(configDialog, mPortNumber, mReadOnlyAPI);}
             });
 
         } catch (Exception e){
@@ -45,33 +48,52 @@ class ConfigureTwsApiPortTask implements Runnable{
         }
     }
 
-    private void configure(final JDialog configDialog, final int portNumber) {
+    private void configure(final JDialog configDialog, final int portNumber, String readOnlyAPI) {
         try {
-            Utils.logToConsole("Performing port configuration");
-            
             if (!TwsListener.selectConfigSection(configDialog, new String[] {"API","Settings"}))
                 // older versions of TWS don't have the Settings node below the API node
                 TwsListener.selectConfigSection(configDialog, new String[] {"API"});
 
-            Component comp = Utils.findComponent(configDialog, "Socket port");
-            if (comp == null) throw new IBControllerException("could not find socket port component");
-
-            JTextField tf = Utils.findTextField((Container)comp, 0);
-            if (tf == null) throw new IBControllerException("could not find socket port field");
-            
-            int currentPort = Integer.parseInt(tf.getText());
-            if (currentPort == portNumber) {
-                Utils.logToConsole("TWS API socket port is already set to " + tf.getText());
-            } else {
-                if (!IBController.isGateway()) {
-                    JCheckBox cb = Utils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
-                    if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
-                    if (cb.isSelected()) TwsListener.setApiConfigChangeConfirmationExpected(true);
-                }
-                Utils.logToConsole("TWS API socket port was set to " + tf.getText());
-                tf.setText(new Integer(portNumber).toString());
-                Utils.logToConsole("TWS API socket port now set to " + tf.getText());
+            if(portNumber != 0) {          
+	            Utils.logToConsole("Performing port configuration");
+	
+	            Component comp = Utils.findComponent(configDialog, "Socket port");
+	            if (comp == null) throw new IBControllerException("could not find socket port component");
+	
+	            JTextField tf = Utils.findTextField((Container)comp, 0);
+	            if (tf == null) throw new IBControllerException("could not find socket port field");
+	            
+	            int currentPort = Integer.parseInt(tf.getText());
+	            if (currentPort == portNumber) {
+	                Utils.logToConsole("TWS API socket port is already set to " + tf.getText());
+	            } else {
+	                if (!IBController.isGateway()) {
+	                    JCheckBox cb = Utils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
+	                    if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
+	                    if (cb.isSelected()) TwsListener.setApiConfigChangeConfirmationExpected(true);
+	                }
+	                Utils.logToConsole("TWS API socket port was set to " + tf.getText());
+	                tf.setText(new Integer(portNumber).toString());
+	                Utils.logToConsole("TWS API socket port now set to " + tf.getText());
+	            }
             }
+            
+			if (readOnlyAPI != null && readOnlyAPI.length() > 0) {
+				Utils.logToConsole("Performing Read-Only API configuration");
+
+				JCheckBox cb = Utils.findCheckBox(configDialog, "Read-Only API");
+				if (cb == null) {
+					throw new IBControllerException("could not find Read-Only API checkbox");
+				}
+				Utils.logToConsole("TWS API Read-Only API was set to " + cb.isSelected());
+				if ("yes".equals(mReadOnlyAPI)) {
+					cb.setSelected(true);
+				}
+				if ("no".equals(mReadOnlyAPI)) {
+					cb.setSelected(false);
+				}
+				Utils.logToConsole("TWS API Read-Only API now set to " + cb.isSelected());
+			}
 
             Utils.clickButton(configDialog, "OK");
 
