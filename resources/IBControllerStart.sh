@@ -35,7 +35,7 @@ TWSDIR=/opt/IBJts
 #   You must include everything after "-cp " up to the 
 #   first subsequent space character:
 
-TWSCP=jts.jar:total.2015b.jar
+TWSCP=jts.jar:total.2013.jar
 
 
 #   Other Java VM options for TWS. You can find this information in the 
