@@ -56,14 +56,14 @@ class ConfigureTwsApiPortTask implements Runnable{
             final String Disable = "disable";
             final String Manual = "manual";
 
+            if (!TwsListener.selectConfigSection(configDialog, new String[] {"API","Settings"}))
+                // older versions of TWS don't have the Settings node below the API node
+                TwsListener.selectConfigSection(configDialog, new String[] {"API"});
+
             if (portNumber != 0) {
 
                 Utils.logToConsole("Performing port configuration");
             
-                if (!TwsListener.selectConfigSection(configDialog, new String[] {"API","Settings"}))
-                    // older versions of TWS don't have the Settings node below the API node
-                    TwsListener.selectConfigSection(configDialog, new String[] {"API"});
-
                 Component comp = Utils.findComponent(configDialog, "Socket port");
                 if (comp == null) throw new IBControllerException("could not find socket port component");
 

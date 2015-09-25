@@ -26,7 +26,7 @@ set TWSDIR=C:\Jts\
 
 
 ::   The classpath for TWS. The value below is correct for version
-::   942 (you can verify which version of TWS you are using by going
+::   952.1a (you can verify which version of TWS you are using by going
 ::   to the Help | About Trader Workstation menu in TWS).
 ::
 ::   For other versions of TWS, the information needed may change.
@@ -43,7 +43,7 @@ set TWSDIR=C:\Jts\
 ::   clipboard, then paste it into the following command, replacing everything 
 ::   after the "=" character:
 
-set TWSCP=jts.jar;total.2012.jar
+set TWSCP=jts.jar;total.2015b.jar
 
 
 ::   Other Java VM options for TWS. You can find this information in the 
@@ -51,7 +51,7 @@ set TWSCP=jts.jar;total.2012.jar
 ::   jclient/LoginFrame is NOT part of the Java options, nor is anything 
 ::   that comes after it, so don't include that here):
 
-set JAVAOPTS=-Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx1024M -XX:MaxPermSize=256M
+set JAVAOPTS=-Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx768M -XX:MaxPermSize=256M
 
 
 pushd %TWSDIR%

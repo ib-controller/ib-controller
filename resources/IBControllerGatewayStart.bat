@@ -29,7 +29,7 @@ set TWSDIR=C:\Jts\
 
 
 ::   The classpath for the IB Gateway. The value below is correct for version 
-::   942 (you can verify which version of the Gateway you are using by going
+::   952.1a (you can verify which version of the Gateway you are using by going
 ::   to the Help | About IB Gateway menu in the Gateway UI).
 ::
 ::   For other versions of the IB Gateway, the information needed may change.
@@ -46,7 +46,7 @@ set TWSDIR=C:\Jts\
 ::   clipboard, then paste it into the following command, replacing everything 
 ::   after the "=" character:
 
-set TWSCP=jts.jar;total.2012.jar
+set TWSCP=jts.jar;total.2015b.jar
 
 
 ::   Other Java VM options for the IB Gateway. You can find this information in the 

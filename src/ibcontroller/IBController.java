@@ -545,7 +545,7 @@ public class IBController {
     private static void startTwsOrGateway() {
         final String Manual = "manual";
         int portNumber = Settings.getInt("ForceTwsApiPort", 0);
-        String apiEnable = Settings.getString("ForceTwsApiEnable", Manual);
+        String apiEnable = isGateway() ? Manual : Settings.getString("ForceTwsApiEnable", Manual);
         String apiReadOnly = Settings.getString("ForceTwsApiReadOnly", Manual);
 
         if (portNumber != 0 || !apiEnable.equalsIgnoreCase(Manual) || !apiReadOnly.equalsIgnoreCase(Manual)) {
