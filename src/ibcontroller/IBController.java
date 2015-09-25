@@ -543,8 +543,14 @@ public class IBController {
     }
 
     private static void startTwsOrGateway() {
+        final String Manual = "manual";
         int portNumber = Settings.getInt("ForceTwsApiPort", 0);
-        if (portNumber != 0) MyCachedThreadPool.getInstance().execute(new ConfigureTwsApiPortTask(portNumber));
+        String apiEnable = Settings.getString("ForceTwsApiEnable", Manual);
+        String apiReadOnly = Settings.getString("ForceTwsApiReadOnly", Manual);
+
+        if (portNumber != 0 || !apiEnable.equalsIgnoreCase(Manual) || !apiReadOnly.equalsIgnoreCase(Manual)) {
+            MyCachedThreadPool.getInstance().execute(new ConfigureTwsApiPortTask(portNumber, apiEnable, apiReadOnly));
+        }
 
         if (isGateway()) {
             startGateway();
