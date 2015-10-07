@@ -325,6 +325,8 @@ public class IBController {
         _WindowHandlers.add(new ExistingSessionDetectedDialogHandler());
         _WindowHandlers.add(new ApiChangeConfirmationDialogHandler());
         _WindowHandlers.add(new SplashFrameHandler());
+        _WindowHandlers.add(new SecurityCodeDialogHandler());
+        _WindowHandlers.add(new ReloginDialogHandler());
     }
 
     private static String getFIXPasswordFromProperties() {
