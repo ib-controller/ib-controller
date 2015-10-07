@@ -27,11 +27,13 @@ class ConfigureTwsApiPortTask implements Runnable{
     final int mPortNumber;
     final String mApiEnable;
     final String mApiReadOnly;
+    final String mApiBypassPrecautions;
     
-    ConfigureTwsApiPortTask(int portNumber, String enable, String readOnly) {
+    ConfigureTwsApiPortTask(int portNumber, String enable, String readOnly, String bypassPrecautions) {
         mPortNumber = portNumber;
         mApiEnable = enable;
         mApiReadOnly = readOnly;
+        mApiBypassPrecautions = bypassPrecautions;
     }
 
     @Override
@@ -41,7 +43,7 @@ class ConfigureTwsApiPortTask implements Runnable{
             
             GuiExecutor.instance().execute(new Runnable(){
                 @Override
-                public void run() {configure(configDialog, mPortNumber, mApiEnable, mApiReadOnly);}
+                public void run() {configure(configDialog, mPortNumber, mApiEnable, mApiReadOnly, mApiBypassPrecautions);}
             });
 
         } catch (Exception e){
@@ -49,7 +51,7 @@ class ConfigureTwsApiPortTask implements Runnable{
         }
     }
 
-    private void configure(final JDialog configDialog, final int portNumber, final String ApiEnable, final String ApiReadOnly) {
+    private void configure(final JDialog configDialog, final int portNumber, final String ApiEnable, final String ApiReadOnly, final String ApiBypassPrecautions) {
         try {
 
             final String Enable = "enable";
@@ -111,6 +113,26 @@ class ConfigureTwsApiPortTask implements Runnable{
                     if (rocb.isSelected()) rocb.doClick();
                 }
                 Utils.logToConsole("TWS Read-Only API checkbox was set to " + rocb.isSelected());
+            }
+
+
+            if (!ApiBypassPrecautions.equalsIgnoreCase(Manual)) {
+                // now configure the Order Precautions, if the configuration calls for it 
+                Utils.logToConsole("Configure Bypass Order Precautions API checkbox: " + ApiBypassPrecautions);
+                if(TwsListener.selectConfigSection(configDialog, new String[] {"API","Precautions"})) {
+
+                    JCheckBox bpcb = Utils.findCheckBox(configDialog, "Bypass Order Precautions for API Orders");
+                    if (bpcb == null) throw new IBControllerException("could not find Bypass Order Precautions API checkbox");
+                    if(ApiBypassPrecautions.equalsIgnoreCase(Enable)) {
+                        if (!bpcb.isSelected()) bpcb.doClick();
+                    }
+                    else if(ApiBypassPrecautions.equalsIgnoreCase(Disable)) {
+                        if (bpcb.isSelected()) bpcb.doClick();
+                    }
+                    Utils.logToConsole("Bypass Order Precautions for API checkbox was set to " + bpcb.isSelected());
+                } else {
+                    throw new IBControllerException("Can't select API->Precautions config section");
+                }
             }
 
             Utils.clickButton(configDialog, "OK");
