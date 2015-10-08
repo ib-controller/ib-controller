@@ -73,7 +73,7 @@ set TWSCP=jts.jar;total.2015b.jar
 ::   NOT part of the Java options, nor is anything that comes after it, 
 ::   so don't include that here):
 
-set JAVAOPTS=-Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx1024M -XX:MaxPermSize=256M
+set JAVAOPTS=-Dsun.java2d.noddraw=true -Dswing.boldMetal=false -Dsun.locale.formatasdefault=true -Xmx768M -XX:MaxPermSize=256M
 
 
 pushd %TWSDIR%

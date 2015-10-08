@@ -25,9 +25,15 @@ import javax.swing.*;
 class ConfigureTwsApiPortTask implements Runnable{
     
     final int mPortNumber;
+    final String mApiEnable;
+    final String mApiReadOnly;
+    final String mApiBypassPrecautions;
     
-    ConfigureTwsApiPortTask(int portNumber) {
+    ConfigureTwsApiPortTask(int portNumber, String enable, String readOnly, String bypassPrecautions) {
         mPortNumber = portNumber;
+        mApiEnable = enable;
+        mApiReadOnly = readOnly;
+        mApiBypassPrecautions = bypassPrecautions;
     }
 
     @Override
@@ -37,7 +43,7 @@ class ConfigureTwsApiPortTask implements Runnable{
             
             GuiExecutor.instance().execute(new Runnable(){
                 @Override
-                public void run() {configure(configDialog, mPortNumber);}
+                public void run() {configure(configDialog, mPortNumber, mApiEnable, mApiReadOnly, mApiBypassPrecautions);}
             });
 
         } catch (Exception e){
@@ -45,32 +51,88 @@ class ConfigureTwsApiPortTask implements Runnable{
         }
     }
 
-    private void configure(final JDialog configDialog, final int portNumber) {
+    private void configure(final JDialog configDialog, final int portNumber, final String ApiEnable, final String ApiReadOnly, final String ApiBypassPrecautions) {
         try {
-            Utils.logToConsole("Performing port configuration");
-            
+
+            final String Enable = "enable";
+            final String Disable = "disable";
+            final String Manual = "manual";
+
             if (!TwsListener.selectConfigSection(configDialog, new String[] {"API","Settings"}))
                 // older versions of TWS don't have the Settings node below the API node
                 TwsListener.selectConfigSection(configDialog, new String[] {"API"});
 
-            Component comp = Utils.findComponent(configDialog, "Socket port");
-            if (comp == null) throw new IBControllerException("could not find socket port component");
+            if (portNumber != 0) {
 
-            JTextField tf = Utils.findTextField((Container)comp, 0);
-            if (tf == null) throw new IBControllerException("could not find socket port field");
+                Utils.logToConsole("Performing port configuration");
             
-            int currentPort = Integer.parseInt(tf.getText());
-            if (currentPort == portNumber) {
-                Utils.logToConsole("TWS API socket port is already set to " + tf.getText());
-            } else {
-                if (!IBController.isGateway()) {
-                    JCheckBox cb = Utils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
-                    if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
-                    if (cb.isSelected()) TwsListener.setApiConfigChangeConfirmationExpected(true);
+                Component comp = Utils.findComponent(configDialog, "Socket port");
+                if (comp == null) throw new IBControllerException("could not find socket port component");
+
+                JTextField tf = Utils.findTextField((Container)comp, 0);
+                if (tf == null) throw new IBControllerException("could not find socket port field");
+            
+                int currentPort = Integer.parseInt(tf.getText());
+                if (currentPort == portNumber) {
+                    Utils.logToConsole("TWS API socket port is already set to " + tf.getText());
+                } else {
+                    if (!IBController.isGateway()) {
+                        JCheckBox cb = Utils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
+                        if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
+                        if (cb.isSelected()) TwsListener.setApiConfigChangeConfirmationExpected(true);
+                    }
+                    Utils.logToConsole("TWS API socket port was set to " + tf.getText());
+                    tf.setText(new Integer(portNumber).toString());
+                    Utils.logToConsole("TWS API socket port now set to " + tf.getText());
                 }
-                Utils.logToConsole("TWS API socket port was set to " + tf.getText());
-                tf.setText(new Integer(portNumber).toString());
-                Utils.logToConsole("TWS API socket port now set to " + tf.getText());
+            }
+
+            // implement ForceTwsApiEnable=enable|disable|manual
+            if (!ApiEnable.equalsIgnoreCase(Manual)) {
+                Utils.logToConsole("Configure ActiveX and Socket Clients: " + ApiEnable);
+                JCheckBox apicb = Utils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
+                if (apicb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
+                if(ApiEnable.equalsIgnoreCase(Enable)) {
+                    if (!apicb.isSelected()) apicb.doClick();
+                }
+                else if(ApiEnable.equalsIgnoreCase(Disable)) {
+                    if (apicb.isSelected()) apicb.doClick();
+                }
+                Utils.logToConsole("TWS Enable ActiveX and Socket Clients checkbox was set to " + apicb.isSelected());
+            }
+
+            // implement ForceTwsApiReadOnly=enable|disable|manual
+            if (!ApiReadOnly.equalsIgnoreCase(Manual)) {
+                Utils.logToConsole("Configure TWS Read-Only API checkbox: " + ApiReadOnly);
+                JCheckBox rocb = Utils.findCheckBox(configDialog, "Read-Only API");
+                if (rocb == null) throw new IBControllerException("could not find read-only API checkbox");
+                if(ApiReadOnly.equalsIgnoreCase(Enable)) {
+                    if (!rocb.isSelected()) rocb.doClick();
+                }
+                else if(ApiReadOnly.equalsIgnoreCase(Disable)) {
+                    if (rocb.isSelected()) rocb.doClick();
+                }
+                Utils.logToConsole("TWS Read-Only API checkbox was set to " + rocb.isSelected());
+            }
+
+
+            if (!ApiBypassPrecautions.equalsIgnoreCase(Manual)) {
+                // now configure the Order Precautions, if the configuration calls for it 
+                Utils.logToConsole("Configure Bypass Order Precautions API checkbox: " + ApiBypassPrecautions);
+                if(TwsListener.selectConfigSection(configDialog, new String[] {"API","Precautions"})) {
+
+                    JCheckBox bpcb = Utils.findCheckBox(configDialog, "Bypass Order Precautions for API Orders");
+                    if (bpcb == null) throw new IBControllerException("could not find Bypass Order Precautions API checkbox");
+                    if(ApiBypassPrecautions.equalsIgnoreCase(Enable)) {
+                        if (!bpcb.isSelected()) bpcb.doClick();
+                    }
+                    else if(ApiBypassPrecautions.equalsIgnoreCase(Disable)) {
+                        if (bpcb.isSelected()) bpcb.doClick();
+                    }
+                    Utils.logToConsole("Bypass Order Precautions for API checkbox was set to " + bpcb.isSelected());
+                } else {
+                    throw new IBControllerException("Can't select API->Precautions config section");
+                }
             }
 
             Utils.clickButton(configDialog, "OK");

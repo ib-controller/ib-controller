@@ -28,7 +28,7 @@ TWSDIR=/opt/IBJts
 
 
 #   The classpath for the IB Gateway. The value below is correct for version
-#   942 (you can verify which version of TWS you are using by going
+#   952.1a (you can verify which version of TWS you are using by going
 #   to the Help | About Trader Workstation menu in TWS).
 #
 #   For other versions of the IB Gateway, the information needed may change.
@@ -46,7 +46,7 @@ TWSCP=jts.jar:total.2013.jar
 #   ibgateway.GWClient is NOT part of the Java options, nor is anything 
 #   that comes after it, so don't include that here):
 
-JAVAOPTS='-Xmx768M -XX:MaxPermSize=256M'
+JAVAOPTS='-Xmx768M -XX:MaxPermSize=128M'
 
 pushd $TWSDIR
 # prevent other Java tools interfering with IBController

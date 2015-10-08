@@ -327,6 +327,10 @@ public class IBController {
         _WindowHandlers.add(new SplashFrameHandler());
         _WindowHandlers.add(new SecurityCodeDialogHandler());
         _WindowHandlers.add(new ReloginDialogHandler());
+        _WindowHandlers.add(new DemoApiAnnouncementsDialogHandler());
+        _WindowHandlers.add(new DemoExitConfirmationDialogHandler());
+        _WindowHandlers.add(new DemoOrderPrecautionsDialogHandler());
+        _WindowHandlers.add(new DemoLoginOfferDialogHandler());
     }
 
     private static String getFIXPasswordFromProperties() {
@@ -545,8 +549,15 @@ public class IBController {
     }
 
     private static void startTwsOrGateway() {
+        final String Manual = "manual";
         int portNumber = Settings.getInt("ForceTwsApiPort", 0);
-        if (portNumber != 0) MyCachedThreadPool.getInstance().execute(new ConfigureTwsApiPortTask(portNumber));
+        String apiEnable = isGateway() ? Manual : Settings.getString("ForceTwsApiEnable", Manual);
+        String apiReadOnly = Settings.getString("ForceTwsApiReadOnly", Manual);
+        String apiBypassPrecautions = Settings.getString("ForceTwsApiBypassPrecautions", Manual);
+
+        if (portNumber != 0 || !apiEnable.equalsIgnoreCase(Manual) || !apiReadOnly.equalsIgnoreCase(Manual) || !apiBypassPrecautions.equalsIgnoreCase(Manual)) {
+            MyCachedThreadPool.getInstance().execute(new ConfigureTwsApiPortTask(portNumber, apiEnable, apiReadOnly, apiBypassPrecautions));
+        }
 
         if (isGateway()) {
             startGateway();
