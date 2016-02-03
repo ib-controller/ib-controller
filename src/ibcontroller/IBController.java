@@ -538,7 +538,15 @@ public class IBController {
 
     private static void startTwsOrGateway() {
         int portNumber = Settings.getInt("ForceTwsApiPort", 0);
-        if (portNumber != 0) MyCachedThreadPool.getInstance().execute(new ConfigureTwsApiPortTask(portNumber));
+
+        // not setting AllowExternalIps or setting it to an empty string should mean "don't change"
+        String allowExternalIpsString = Settings.getString("AllowExternalIps", "");
+        Boolean allowExternalIps = null;
+        if (allowExternalIpsString != "") {
+            allowExternalIps = Boolean.valueOf(allowExternalIpsString);
+        }
+
+        MyCachedThreadPool.getInstance().execute(new ConfigureTwsSettingsTask(portNumber, allowExternalIps));
 
         if (isGateway()) {
             startGateway();
