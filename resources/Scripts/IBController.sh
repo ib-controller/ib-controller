@@ -103,6 +103,12 @@ if [ "$TWS_PATH" = "" ]; then TWS_PATH=~/Jts ;fi
 if [ "$IBC_PATH" = "" ]; then IBC_PATH=/opt/IBController ;fi
 if [ "$IBC_INI" = "" ]; then IBC_INI=~/IBController/IBController.ini ;fi
 
+if [[ "$ENTRY_POINT" = "$ENTRY_POINT_GATEWAY" ]]; then
+  TWS_VMOPTS=$TWS_PATH/$TWS_VERSION/ibgateway.vmoptions
+else
+  TWS_VMOPTS=$TWS_PATH/$TWS_VERSION/tws.vmoptions
+fi
+
 TWS_JARS=$TWS_PATH/$TWS_VERSION/jars
 
 if [[ ! -e "$TWS_JARS" ]]; then
@@ -120,13 +126,13 @@ if [[ ! -e "$IBC_INI" ]]; then
 	exit $E_IBC_INI_NOT_EXIST
 fi
 
-if [[ ! -e "$TWS_PATH/$TWS_VERSION/tws.vmoptions" ]]; then
-	echo $TWS_PATH/$TWS_VERSION/tws.vmoptions does not exist
+if [[ ! -e "$TWS_VMOPTS" ]]; then
+	echo $TWS_VMOPTS does not exist
 	exit $E_TWS_VMOPTIONS_NOT_FOUND
 fi
 
 if [[ -n $JAVA_PATH ]]; then
-	if [[ ! -e "$JAVA_PATH/java" ]]; then 
+	if [[ ! -e "$JAVA_PATH/java" ]]; then
 		echo $JAVA_PATH/java does not exist
 		exit $E_NO_JAVA
 	fi
@@ -159,7 +165,7 @@ while read LINE; do
 		VM_OPTIONS[$index]="$LINE"
 		((index++))
 	fi
-done < <( cat "$TWS_PATH/$TWS_VERSION/tws.vmoptions" )
+done < <( cat "$TWS_VMOPTS" )
 
 JAVA_VM_OPTIONS=${VM_OPTIONS[*]}
 echo Java VM Options=$JAVA_VM_OPTIONS

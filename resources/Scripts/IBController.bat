@@ -133,6 +133,12 @@ if not defined IBC_PATH set IBC_PATH=C:\IBController
 if not defined IBC_INI set IBC_INI=%HOMEPATH%\Documents\IBController\IBController.ini
 
 
+if /I "%ENTRY_POINT%" == "%ENTRY_POINT_GATEWAY%" (
+  set TWS_VMOPTS=%TWS_PATH%\%TWS_VERSION%\ibgateway.vmoptions
+) else (
+  set TWS_VMOPTS=%TWS_PATH%\%TWS_VERSION%\tws.vmoptions
+)
+
 set TWS_JARS=%TWS_PATH%\%TWS_VERSION%\jars
 
 if not exist "%TWS_JARS%" (
@@ -150,8 +156,8 @@ if not exist "%IBC_INI%" (
 	set ERROR=%E_IBC_INI_NOT_EXIST%
 	goto :err
 )
-if not exist "%TWS_PATH%\%TWS_VERSION%\tws.vmoptions" (
-	echo %TWS_PATH%\%TWS_VERSION%\tws.vmoptions does not exist
+if not exist "%TWS_VMOPTS%" (
+	echo %TWS_VMOPTS% does not exist
 	set ERROR=%E_TWS_VMOPTIONS_NOT_FOUND%
 	goto :err
 )
@@ -175,7 +181,7 @@ echo.
 
 echo Generating the JAVA VM options
 
-for /f "tokens=1 delims= " %%i in (%TWS_PATH%\%TWS_VERSION%\tws.vmoptions) do (
+for /f "tokens=1 delims= " %%i in (%TWS_VMOPTS%) do (
 	set TOKEN=%%i
 	if not "!TOKEN:~0,1!"=="#" set JAVA_VM_OPTIONS=!JAVA_VM_OPTIONS! %%i
 )
