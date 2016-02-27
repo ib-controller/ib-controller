@@ -1,6 +1,6 @@
 // This file is part of the "IBController".
 // Copyright (C) 2004 Steven M. Kearns (skearns23@yahoo.com )
-// Copyright (C) 2004 - 2011 Richard L King (rlking@aultan.com)
+// Copyright (C) 2004 - 2015 Richard L King (rlking@aultan.com)
 // For conditions of distribution and use, see copyright notice in COPYING.txt
 
 // IBController is free software: you can redistribute it and/or modify
@@ -20,23 +20,14 @@ package ibcontroller;
 
 import java.awt.Window;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 
-public class SplashFrameHandler implements WindowHandler {
+public class SecurityCodeDialogHandler implements WindowHandler {
 
     @Override
     public boolean filterEvent(Window window, int eventId) {
-        /*
-         * Note that we are only interested in the closing of the gateway splash
-         * frame, because that indicates that the gateway is now in a position to
-         * start handling menu commands.
-         * 
-         * Note also that the splash frame's window title is repeatedly changed during 
-         * gateway initialisation, and it's only the last title value that we use for 
-         * recognising it
-         */
         switch (eventId) {
-            case WindowEvent.WINDOW_CLOSED:
+            case WindowEvent.WINDOW_OPENED:
                 return true;
             default:
                 return false;
@@ -45,14 +36,19 @@ public class SplashFrameHandler implements WindowHandler {
 
     @Override
     public void handleWindow(Window window, int eventID) {
-        TwsListener.setSplashScreenClosed();
+        if (! Settings.getBoolean("ReadOnlyLogin", false)) return;
+
+        if (Utils.clickButton(window, "Enter Read Only")) {
+            Utils.logToConsole("initiating read-only login.");
+        } else {
+            Utils.logError("could not initiate read-only login.");
+        }
     }
 
     @Override
     public boolean recogniseWindow(Window window) {
-        if (! (window instanceof JFrame))  return false;
-
-        return (Utils.titleContains(window, "Starting application..."));
+        if (! (window instanceof JDialog)) return false;
+        return (Utils.findButton(window, "Enter Read Only") != null);
     }
     
 }

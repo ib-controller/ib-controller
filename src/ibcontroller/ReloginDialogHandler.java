@@ -1,6 +1,6 @@
 // This file is part of the "IBController".
 // Copyright (C) 2004 Steven M. Kearns (skearns23@yahoo.com )
-// Copyright (C) 2004 - 2011 Richard L King (rlking@aultan.com)
+// Copyright (C) 2004 - 2015 Richard L King (rlking@aultan.com)
 // For conditions of distribution and use, see copyright notice in COPYING.txt
 
 // IBController is free software: you can redistribute it and/or modify
@@ -22,7 +22,9 @@ import java.awt.Window;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 
-public class ExistingSessionDetectedDialogHandler implements WindowHandler {
+public class ReloginDialogHandler implements WindowHandler {
+
+    @Override
     public boolean filterEvent(Window window, int eventId) {
         switch (eventId) {
             case WindowEvent.WINDOW_OPENED:
@@ -32,31 +34,34 @@ public class ExistingSessionDetectedDialogHandler implements WindowHandler {
         }
     }
 
+    @Override
     public void handleWindow(Window window, int eventID) {
         String setting = Settings.getString("ExistingSessionDetectedAction", "manual");
         if (setting.equalsIgnoreCase("primary")) {
-            Utils.logToConsole("End the other session and continue this one");
-            if (!Utils.clickButton(window, "OK") && 
-                    !Utils.clickButton(window, "Continue Login") &&
-                    !Utils.clickButton(window, "Reconnect This Session"))  {
-                Utils.logError("could not handle 'Existing session detected' dialog because the 'OK' or 'Continue Login' or 'Reconnect This Session' button wasn't found.");
+            Utils.logToConsole("Re-login because this is the primary session");
+            if (!Utils.clickButton(window, "Re-login"))  {
+                Utils.logError("could not handle 'Re-login is required' dialog because the 'Re-login' button wasn't found.");
             }
         } else if (setting.equalsIgnoreCase("secondary")) {
-            Utils.logToConsole("End this session and let the other session proceed");
-            if (!Utils.clickButton(window, "Cancel") && !Utils.clickButton(window, "Exit Application")) {
-                Utils.logError("could not handle 'Existing session detected' dialog because the 'Cancel' or 'Exit Application' button wasn't found.");
+            Utils.logToConsole("Don't re-login because this is a secondary session");
+            if (!Utils.clickButton(window, "Exit Application"))  {
+                Utils.logError("could not handle 'Re-login is required' dialog because the 'Exit Application' button wasn't found.");
             }
         } else if (setting.equalsIgnoreCase("manual")) {
-            Utils.logToConsole("User must choose whether to continue with this session");
-            // nothing to do
+            // NB: arguably we should handle re-login automatically here, but in 
+            // practice TWS seems to get itself into a funny state and doesn't display 
+            // the 'Existing session detected' dialog (maybe because IBController responds
+            // too quickly? Who knows...)
+            Utils.logToConsole("Let user choose whether to re-login");
         } else {
-            Utils.logError("could not handle 'Existing session detected' dialog because the ExistingSessionDetectedAction setting is invalid.");
+            Utils.logError("could not handle 'Re-login is required' dialog because the ExistingSessionDetectedAction setting is invalid.");
         }
-    }
+}
 
+    @Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JDialog)) return false;
-
-        return (Utils.titleContains(window, "Existing session detected"));
+        return (Utils.titleContains(window, "Re-login is required"));
     }
+    
 }
