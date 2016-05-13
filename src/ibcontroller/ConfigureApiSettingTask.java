@@ -6,10 +6,10 @@ import javax.swing.*;
 
 class ConfigureApiSettingTask implements Runnable {
     final boolean readOnlyApi;
-    final int portNumber;
+    final int apiPort;
 
-    ConfigureApiSettingTask(int portNumber, boolean readOnlyApi) {
-        this.portNumber = portNumber;
+    ConfigureApiSettingTask(int apiPort, boolean readOnlyApi) {
+        this.apiPort = apiPort;
         this.readOnlyApi = readOnlyApi;
     }
 
@@ -22,7 +22,7 @@ class ConfigureApiSettingTask implements Runnable {
             GuiExecutor.instance().execute(new Runnable(){
                 @Override
                 public void run() {
-                    configure(configDialog, portNumber, readOnlyApi);
+                    configure(configDialog, apiPort, readOnlyApi);
                 }
             });
 
@@ -31,7 +31,7 @@ class ConfigureApiSettingTask implements Runnable {
         }
     }
 
-    private void configure(final JDialog configDialog, final int portNumber, final boolean readOnlyApi) {
+    private void configure(final JDialog configDialog, final int apiPort, final boolean readOnlyApi) {
         try {
             Utils.logToConsole("Performing Api setting configuration");
 
@@ -39,7 +39,7 @@ class ConfigureApiSettingTask implements Runnable {
                 // older versions of TWS don't have the Settings node below the API node
                 TwsListener.selectConfigSection(configDialog, new String[] {"API"});
 
-            if (portNumber != 0) {
+            if (apiPort != 0) {
                 Component comp = Utils.findComponent(configDialog, "Socket port");
                 if (comp == null)
                     throw new IBControllerException("could not find socket port component");
@@ -48,7 +48,7 @@ class ConfigureApiSettingTask implements Runnable {
                 if (tf == null) throw new IBControllerException("could not find socket port field");
 
                 int currentPort = Integer.parseInt(tf.getText());
-                if (currentPort == portNumber) {
+                if (currentPort == apiPort) {
                     Utils.logToConsole("TWS API socket port is already set to " + tf.getText());
                 } else {
                     if (!IBController.isGateway()) {
@@ -62,7 +62,7 @@ class ConfigureApiSettingTask implements Runnable {
                         }
                     }
                     Utils.logToConsole("TWS API socket port was set to " + tf.getText());
-                    tf.setText(new Integer(portNumber).toString());
+                    tf.setText(new Integer(apiPort).toString());
                     Utils.logToConsole("TWS API socket port now set to " + tf.getText());
                 }
             }
