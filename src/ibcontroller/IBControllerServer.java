@@ -19,6 +19,7 @@
 package ibcontroller;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,17 +34,14 @@ class IBControllerServer
     
 
 
-    IBControllerServer(boolean isGateway) {
+    IBControllerServer(boolean isGateway) throws BindException {
         this.isGateway = isGateway;
+        createSocket();
     }
 
     @Override public void run() {
         Thread.currentThread().setName("IBControllerServer");
         Utils.logToConsole("IBControllerServer is started.");
-
-        if (! createSocket()) {
-            return;
-        }
 
         for (; !mQuitting;) {
             Socket socket = getClient();
@@ -63,7 +61,7 @@ class IBControllerServer
         mQuitting = true;
     }
 
-    private boolean createSocket() {
+    private boolean createSocket() throws BindException {
         int port = Settings.settings().getInt("IbControllerPort", 7462);
         int backlog = 5;
         String bindaddr = null;
@@ -84,6 +82,9 @@ class IBControllerServer
         } catch (IOException e) {
             Utils.logError("exception:\n" + e.toString());
             Utils.logToConsole("IBControllerServer failed to create socket");
+            if ( e instanceof BindException ) {
+            	throw (BindException)e;
+            }
             mSocket = null;
             mQuitting = true;
             return false;

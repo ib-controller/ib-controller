@@ -20,16 +20,15 @@ package ibcontroller;
 
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
-import java.io.File;
-import java.text.SimpleDateFormat;
+import java.net.BindException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 
@@ -278,7 +277,7 @@ public class IBController {
         }
     }
 
-    public static void load() {
+    public static void load() throws BindException {
         printProperties();
         
         Settings.settings().logDiagnosticMessage();
@@ -394,7 +393,7 @@ public class IBController {
         }
     }
 
-    private static void startIBControllerServer(boolean isGateway) {
+    private static void startIBControllerServer(boolean isGateway) throws BindException {
         MyCachedThreadPool.getInstance().execute(new IBControllerServer(isGateway));
     }
 
