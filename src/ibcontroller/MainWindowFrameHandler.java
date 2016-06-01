@@ -18,12 +18,12 @@
 
 package ibcontroller;
 
-import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 class MainWindowFrameHandler implements WindowHandler {
+    @Override
     public boolean filterEvent(Window window, int eventId) {
         switch (eventId) {
             case WindowEvent.WINDOW_OPENED:
@@ -33,22 +33,18 @@ class MainWindowFrameHandler implements WindowHandler {
         }
     }
 
+    @Override
     public void handleWindow(Window window, int eventID) {
         if (eventID != WindowEvent.WINDOW_OPENED) return;
         
-        ComponentIterator iter = new ComponentIterator(window);
-        while (iter.hasNext()) {
-            Component component = iter.next();
-            Utils.logToConsole(component.getName() + "(" + component.getClass().getName() + ")");
-        }
-
-        TwsListener.setMainWindow((JFrame) window);
+        MainWindowManager.mainWindowManager().setMainWindow((JFrame) window);
     }
 
+    @Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JFrame)) return false;
 
-        return Utils.findMenuItemInAnyMenuBar(window, new String [] {"Help", "About Trader Workstation..."}) != null;
+        return SwingUtils.findMenuItemInAnyMenuBar(window, new String [] {"Help", "About Trader Workstation..."}) != null;
     }
 }
 

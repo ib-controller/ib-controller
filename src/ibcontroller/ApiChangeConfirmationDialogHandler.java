@@ -28,7 +28,7 @@ class ApiChangeConfirmationDialogHandler implements WindowHandler {
     public boolean filterEvent(Window window, int eventId) {
         switch (eventId) {
             case WindowEvent.WINDOW_OPENED:
-                if (TwsListener.getApiConfigChangeConfirmationExpected()) return true;
+                if (ConfigDialogManager.configDialogManager().getApiConfigChangeConfirmationExpected()) return true;
                 return false;
             default:
                 return false;
@@ -37,8 +37,8 @@ class ApiChangeConfirmationDialogHandler implements WindowHandler {
 
     @Override
     public void handleWindow(Window window, int eventID) {
-        TwsListener.setApiConfigChangeConfirmationExpected(false);
-        if (Utils.clickButton(window, "Yes")) {
+        ConfigDialogManager.configDialogManager().setApiConfigChangeConfirmationExpected(false);
+        if (SwingUtils.clickButton(window, "Yes")) {
         } else {
             Utils.logError("can't apply new API socket port: 'Yes' button not found");
         }
@@ -48,7 +48,7 @@ class ApiChangeConfirmationDialogHandler implements WindowHandler {
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JDialog)) return false;
 
-        return (Utils.findLabel(window, "apply the new socket port setting") != null);
+        return (SwingUtils.findLabel(window, "apply the new socket port setting") != null);
     }
     
 }

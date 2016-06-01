@@ -1,6 +1,6 @@
 // This file is part of the "IBController".
 // Copyright (C) 2004 Steven M. Kearns (skearns23@yahoo.com )
-// Copyright (C) 2004 - 2011 Richard L King (rlking@aultan.com)
+// Copyright (C) 2004 - 2016 Richard L King (rlking@aultan.com)
 // For conditions of distribution and use, see copyright notice in COPYING.txt
 
 // IBController is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ package ibcontroller;
 
 import java.awt.Window;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 
-class GatewayMainWindowFrameHandler  implements WindowHandler {
+public class NonBrokerageAccountDialogHandler  implements WindowHandler {
     @Override
     public boolean filterEvent(Window window, int eventId) {
         switch (eventId) {
@@ -35,14 +35,17 @@ class GatewayMainWindowFrameHandler  implements WindowHandler {
 
     @Override
     public void handleWindow(Window window, int eventID) {
-        MainWindowManager.mainWindowManager().setMainWindow((JFrame) window);
+        if (! Settings.settings().getBoolean("AcceptNonBrokerageAccountWarning", true)) return;
+
+        if (! SwingUtils.clickButton(window, "I understand and accept")) {
+            Utils.logError("could not dismiss non-brokerage account warning dialog.");
+        }
     }
 
     @Override
     public boolean recogniseWindow(Window window) {
-        if (! (window instanceof JFrame)) return false;
-
-        return SwingUtils.findMenuItemInAnyMenuBar(window, new String [] {"Help", "About IB Gateway"}) != null;
+        if (! (window instanceof JDialog)) return false;
+        return (SwingUtils.findLabel(window, "This is not a brokerage account") != null );
     }
 
 }

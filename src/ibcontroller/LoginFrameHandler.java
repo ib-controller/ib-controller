@@ -19,65 +19,53 @@
 package ibcontroller;
 
 import java.awt.Window;
-import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
-class LoginFrameHandler implements WindowHandler {
-    public boolean filterEvent(Window window, int eventId) {
-        switch (eventId) {
-            case WindowEvent.WINDOW_OPENED:
-                return true;
-            default:
-                return false;
-        }
-    }
+final class LoginFrameHandler extends AbstractLoginHandler {
 
-    public void handleWindow(Window window, int eventID) {
-        if (eventID != WindowEvent.WINDOW_OPENED) return;
-        TwsListener.setLoginFrame((JFrame) window);
-
-        if (! setFieldsAndClick(window)) {
-            Utils.logError("could not login because we could not find one of the controls.");
-        }
-    }
-
+    @Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JFrame)) return false;
 
         // we check for the presence of the Login button because 
         // TWS displays a different (information-only) dialog, also 
         // entitled Login, when it's trying to reconnect
-        return ((Utils.titleEquals(window, "New Login") ||
-                Utils.titleEquals(window, "Login")) &&
-                Utils.findButton(window, "Login") != null);
+        return ((SwingUtils.titleEquals(window, "New Login") ||
+                SwingUtils.titleEquals(window, "Login")) &&
+                SwingUtils.findButton(window, "Login") != null);
     }
 
-    private boolean setFieldsAndClick(final Window window) {
-        if (! Utils.setTextField(window, 0, TwsListener.getIBAPIUserName())) return false;
-        if (! Utils.setTextField(window, 1, TwsListener.getIBAPIPassword())) return false;
-        if (! Utils.setCheckBoxSelected(window,
-                                            "Use/store settings on server",
-                                            Settings.getBoolean("StoreSettingsOnServer", false))) return false;
+    @Override
+    protected final boolean initialise(final Window window, int eventID) throws IBControllerException {
+        setTradingModeCombo(window);
 
-        if (TwsListener.getIBAPIUserName().length() == 0) {
-            Utils.findTextField(window, 0).requestFocus();
-            return true;
-        }
-        if (TwsListener.getIBAPIPassword().length() == 0) {
-            Utils.findTextField(window, 1).requestFocus();
-            return true;
-        }
-
-        if (Utils.findButton(window, "Login") == null) return false;
-        
-        GuiDeferredExecutor.instance().execute(new Runnable() {
-            @Override
-            public void run() {
-                Utils.clickButton(window, "Login");
-            }
-        });
+        final String STORE_SETTINGS_ON_SERVER_CHECKBOX = "Use/store settings on server";
+        if (! SwingUtils.setCheckBoxSelected(
+                window,
+                STORE_SETTINGS_ON_SERVER_CHECKBOX,
+                Settings.settings().getBoolean("StoreSettingsOnServer", false))) throw new IBControllerException(STORE_SETTINGS_ON_SERVER_CHECKBOX);
 
         return true;
     }
+    
+    @Override
+    protected final boolean preLogin(final Window window, int eventID) throws IBControllerException {
+        if (LoginManager.loginManager().IBAPIUserName().length() == 0) {
+            setMissingCredential(window, 0);
+        } else if (LoginManager.loginManager().IBAPIPassword().length() == 0) {
+            setMissingCredential(window, 1);
+        } else {
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    protected final boolean setFields(Window window, int eventID) throws IBControllerException {
+        setCredential(window, "IBAPI user name", 0, LoginManager.loginManager().IBAPIUserName());
+        setCredential(window, "IBAPI password", 1, LoginManager.loginManager().IBAPIPassword());
+        return true;
+    }
+    
 }
 

@@ -26,9 +26,11 @@ class CommandDispatcher
         implements Runnable {
 
     private final CommandChannel mChannel;
+    private final boolean isGateway;
 
-    CommandDispatcher(CommandChannel channel) {
+    CommandDispatcher(CommandChannel channel, boolean isGateway) {
         this.mChannel = channel;
+        this.isGateway = isGateway;
     }
 
     @Override public void run() {
@@ -60,7 +62,7 @@ class CommandDispatcher
     }
 
     private void handleEnableAPICommand() {
-        if (IBController.isGateway()) {
+        if (isGateway) {
             mChannel.writeNack("ENABLEAPI is not valid for the IB Gateway");
             return;
         }
@@ -69,7 +71,7 @@ class CommandDispatcher
    }
 
     private void handleReconnectDataCommand() {
-        JFrame jf = TwsListener.getMainWindow(1, TimeUnit.MILLISECONDS);
+        JFrame jf = MainWindowManager.mainWindowManager().getMainWindow(1, TimeUnit.MILLISECONDS);
 
         int modifiers = KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK;
         KeyEvent pressed=new KeyEvent(jf,  KeyEvent.KEY_PRESSED, System.currentTimeMillis(), modifiers, KeyEvent.VK_F, KeyEvent.CHAR_UNDEFINED);
@@ -83,7 +85,7 @@ class CommandDispatcher
    }
 
     private void handleReconnectAccountCommand() {
-        JFrame jf = TwsListener.getMainWindow();
+        JFrame jf = MainWindowManager.mainWindowManager().getMainWindow();
 
         int modifiers = KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK;
         KeyEvent pressed=new KeyEvent(jf,  KeyEvent.KEY_PRESSED, System.currentTimeMillis(), modifiers, KeyEvent.VK_R, KeyEvent.CHAR_UNDEFINED);

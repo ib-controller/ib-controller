@@ -1,8 +1,6 @@
-#!/bin/bash
-
 #=============================================================================+
 #                                                                             +
-#   This command file starts the Interactive Brokers' Gateway.                +
+#   This command file starts the Interactive Brokers' Trader Workstation.     +
 #                                                                             +
 #   The following lines are the only ones you may need to change, and you     +
 #   probably only need to change the first one.                               +
@@ -17,12 +15,11 @@ TWS_MAJOR_VRSN=952
 IBC_INI=~/IBController/IBController.ini
 TRADING_MODE=
 IBC_PATH=/opt/IBController
-TWS_PATH=~/Jts
+TWS_PATH=~/Applications
+TWS_CONFIG_PATH=~/Jts
 LOG_PATH=~/IBController/Logs
 TWSUSERID=
 TWSPASSWORD=
-FIXUSERID=
-FIXPASSWORD=
 JAVA_PATH=
 
 
@@ -34,9 +31,9 @@ JAVA_PATH=
 
 #   TWS_MAJOR_VRSN
 #
-#     Specifies the major version number of Gateway to be run. If you are 
-#     unsure of which version number to use, run Gateway manually from the 
-#     icon on the desktop, then click Help > About IB Gateway. In the 
+#     Specifies the major version number of TWS to be run. If you are 
+#     unsure of which version number to use, run TWS manually from the 
+#     icon on the desktop, then click Help > About Trader Workstation. In the 
 #     displayed information you'll see a line similar to this:
 #
 #       Build 954.2a, Oct 30, 2015 4:07:54 PM
@@ -75,11 +72,16 @@ JAVA_PATH=
 
 #   TWS_PATH
 #
-#     The folder where Gateway is installed. The Gateway installer always 
-#     installs to ~/Jts. Note that even if you have installed from a Gateway 
+#     The folder where TWS is installed. The TWS installer always installs to 
+#     ~/Applications. Note that even if you have installed from a Gateway 
 #     download rather than a TWS download, you should still use this default 
-#     setting. It is possibe to move the TWS installation to a different 
-#     folder, but there are virtually no good reasons for doing so.
+#     setting. It is possibe to move the TWS installation to a different folder,
+#     but there are virtually no good reasons for doing so.
+
+
+#   TWS_CONFIG_PATH
+#
+#     The folder where the jts.ini and *.vmoptions files are stored.
 
 
 #   LOG_PATH
@@ -105,16 +107,6 @@ JAVA_PATH=
 #     is not normally in a protected location.
 
 
-#   FIXUSERID
-#   FIXPASSWORD
-#
-#     If you are running the FIX Gateway (for which you must set FIX=yes in 
-#     your IBController configuration file), and the FIX user id and password 
-#     are not included in the configuration file, you can set them here (do 
-#     not encrypt the password). However you are strongly advised not to set 
-#     them here because this file is not normally in a protected location.
-
-
 #   JAVA_PATH
 #
 #     IB's installer for TWS/Gateway includes a hidden version of Java which 
@@ -128,22 +120,18 @@ JAVA_PATH=
 #   End of Notes:
 #==============================================================================
 
-APP=GATEWAY
-TWS_CONFIG_PATH="$TWS_PATH"
+MODE=TWS
 
 export TWS_MAJOR_VRSN
 export IBC_INI
-export TRADING_MODE
 export IBC_PATH
 export TWS_PATH
 export TWS_CONFIG_PATH
 export LOG_PATH
 export TWSUSERID
 export TWSPASSWORD
-export FIXUSERID
-export FIXPASSWORD
 export JAVA_PATH
-export APP
+export MODE
 
 "${IBC_PATH}/Scripts/DisplayBannerAndLaunch.sh" &
 

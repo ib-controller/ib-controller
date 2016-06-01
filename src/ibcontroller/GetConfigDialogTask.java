@@ -19,7 +19,6 @@
 package ibcontroller;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,12 +31,17 @@ class GetConfigDialogTask implements Callable<JDialog>{
     private final Lock lock = new ReentrantLock();
     private final Condition gotConfigDialog = lock.newCondition();
     private final Condition gatewayInitialised = lock.newCondition();
+    private final boolean isGateway;
+    
+    GetConfigDialogTask(boolean isGateway) {
+        this.isGateway = isGateway;
+    }
     
     @Override
     public JDialog call() throws IBControllerException, InterruptedException {
-        final JFrame mainForm = TwsListener.getMainWindow();
+        final JFrame mainForm = MainWindowManager.mainWindowManager().getMainWindow();
         
-        if (IBController.isGateway()) {
+        if (isGateway) {
             /*
              * For the gateway, the main form is loaded right at the start, and long before
              * the menu items become responsive: any attempt to access the Configure > Settings
@@ -62,12 +66,12 @@ class GetConfigDialogTask implements Callable<JDialog>{
             }
         }
         
-        if (IBController.isGateway()) {
-            if (!Utils.invokeMenuItem(mainForm, new String[] {"Configure", "Settings"})) throw new IBControllerException("Can't find 'Configure > Settings' menu item");
+        if (isGateway) {
+            if (!Utils.invokeMenuItem(mainForm, new String[] {"Configure", "Settings"})) throw new IBControllerException("'Configure > Settings' menu item");
         } else if (Utils.invokeMenuItem(mainForm, new String[] {"Edit", "Global Configuration..."})) /* TWS's Classic layout */ {
         } else if (Utils.invokeMenuItem(mainForm, new String[] {"File", "Global Configuration..."})) /* TWS's Mosaic layout */ {
         } else {
-            throw new IBControllerException("Can't find 'Edit > Global Configuration' or 'File > Global Configuration' menu items");
+            throw new IBControllerException("'Edit > Global Configuration' or 'File > Global Configuration' menu items");
         }
         
         lock.lock();
@@ -92,7 +96,7 @@ class GetConfigDialogTask implements Callable<JDialog>{
     }
     
     void setSplashScreenClosed() {
-        if (!IBController.isGateway()) return;
+        if (!isGateway) return;
         lock.lock();
         try {
             mGatewayInitialised = true;

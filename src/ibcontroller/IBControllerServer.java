@@ -22,15 +22,20 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executor;
 
 class IBControllerServer
         implements Runnable {
 
     private ServerSocket mSocket = null;
     private volatile boolean mQuitting = false;
+    
+    private final boolean isGateway;
+    
 
-    IBControllerServer() {}
+
+    IBControllerServer(boolean isGateway) {
+        this.isGateway = isGateway;
+    }
 
     @Override public void run() {
         Thread.currentThread().setName("IBControllerServer");
@@ -43,7 +48,7 @@ class IBControllerServer
         for (; !mQuitting;) {
             Socket socket = getClient();
 
-            if (socket != null) MyCachedThreadPool.getInstance().execute(new CommandDispatcher(new CommandChannel(socket)));
+            if (socket != null) MyCachedThreadPool.getInstance().execute(new CommandDispatcher(new CommandChannel(socket), isGateway));
         }
 
         try {
@@ -59,11 +64,11 @@ class IBControllerServer
     }
 
     private boolean createSocket() {
-        int port = Settings.getInt("IbControllerPort", 7462);
+        int port = Settings.settings().getInt("IbControllerPort", 7462);
         int backlog = 5;
         String bindaddr = null;
         try {
-            bindaddr = Settings.getString("IbBindAddress", "");
+            bindaddr = Settings.settings().getString("IbBindAddress", "");
             if (bindaddr != null && bindaddr.length() > 0) {
                 mSocket = new ServerSocket(port,
                                             backlog,
@@ -92,12 +97,12 @@ class IBControllerServer
             socket = mSocket.accept();
 
             String allowedAddresses =
-                    Settings.getString("IbControlFrom", "");
+                    Settings.settings().getString("IbControlFrom", "");
 
             if (!socket.getInetAddress().equals(mSocket.getInetAddress()) &&
                     !socket.getInetAddress().equals(InetAddress.getLocalHost()) &&
-                    allowedAddresses.indexOf(socket.getInetAddress().getHostAddress()) == -1 &&
-                    allowedAddresses.indexOf(socket.getInetAddress().getHostName()) == -1) {
+                    !allowedAddresses.contains(socket.getInetAddress().getHostAddress()) &&
+                    !allowedAddresses.contains(socket.getInetAddress().getHostName())) {
                 Utils.logToConsole("IBControllerServer denied access to: " +
                                     socket.getInetAddress().toString());
                 socket.close();
