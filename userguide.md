@@ -457,7 +457,6 @@ is a list of the settings that you are most likely to need to change:
 | AcceptIncomingConnectionAction | It is safest to set this to `reject` and to explicitly configure TWS to specify which IP addresses are allowed to connnect to the API                                                                                  |
 | IbAutoClosedown    | Set this to `no` to prevent TWS's daily auto closedown        |
 | ClosedownAt        | Set this if you want to keep TWS running all week             |
-| ------------------ | ------------------------------------------------------------- |
 
 There are two ways that IBController can locate your edited `IBController.ini` file. 
 
