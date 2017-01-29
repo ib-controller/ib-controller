@@ -132,7 +132,7 @@ JAVA_PATH=
 #   End of Notes:
 #==============================================================================
 
-APP=GATEWAY
+export APP=GATEWAY
 
 export TWS_MAJOR_VRSN
 export IBC_INI
