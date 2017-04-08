@@ -1,6 +1,6 @@
 // This file is part of the "IBController".
 // Copyright (C) 2004 Steven M. Kearns (skearns23@yahoo.com )
-// Copyright (C) 2004 - 2011 Richard L King (rlking@aultan.com)
+// Copyright (C) 2004 - 2017 Richard L King (rlking@aultan.com)
 // For conditions of distribution and use, see copyright notice in COPYING.txt
 
 // IBController is free software: you can redistribute it and/or modify
@@ -22,33 +22,29 @@ import java.awt.Window;
 import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 
-class ApiChangeConfirmationDialogHandler implements WindowHandler {
-
-    @Override
+public class ExitConfirmationDialogHandler implements WindowHandler {
     public boolean filterEvent(Window window, int eventId) {
         switch (eventId) {
             case WindowEvent.WINDOW_OPENED:
-                if (ConfigDialogManager.configDialogManager().getApiConfigChangeConfirmationExpected()) return true;
-                return false;
+                return true;
             default:
                 return false;
         }
     }
 
-    @Override
     public void handleWindow(Window window, int eventID) {
-        ConfigDialogManager.configDialogManager().setApiConfigChangeConfirmationHandled();
-        if (SwingUtils.clickButton(window, "Yes")) {
-        } else {
-            Utils.logError("can't apply new API socket port: 'Yes' button not found");
+        if (StopTask.shutdownInProgress()) {
+            if (SwingUtils.clickButton(window, "Yes")) {
+            } else {
+                Utils.logError("could not ignore shutdown confirmation dialog because we could not find one of the controls.");
+            }
         }
     }
 
-    @Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JDialog)) return false;
 
-        return (SwingUtils.findLabel(window, "apply the new socket port setting") != null);
+        return (SwingUtils.findLabel(window, "Are you sure you want to exit?") != null);
     }
     
 }
