@@ -23,6 +23,9 @@ import static ibcontroller.IBController.setupDefaultEnvironment;
 
 public class IBGatewayController {
     public static void main(String[] args) throws Exception {
+        if (Thread.getDefaultUncaughtExceptionHandler() == null) {
+            Thread.setDefaultUncaughtExceptionHandler(new ibcontroller.UncaughtExceptionHandler());
+        }
         checkArguments(args);
         setupDefaultEnvironment(args, true);
         IBController.load();
