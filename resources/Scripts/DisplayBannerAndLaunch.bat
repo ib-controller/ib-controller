@@ -69,7 +69,7 @@ if defined LOG_PATH (
 
 echo +
 echo + ** Caution: closing this window will close %APP% %TWS_MAJOR_VRSN% **
-echo + (window will close automatically when you exit from %APP% %TWS_MAJOR_VRSN%)
+if "%INLINE%" == "0" echo + (window will close automatically when you exit from %APP% %TWS_MAJOR_VRSN%)
 echo +
 
 ::   now launch IBController
@@ -96,6 +96,7 @@ if defined LOG_PATH (
 )
 
 color
+if "%INLINE%" == "1" exit /B
 exit
 
 :err
@@ -133,4 +134,5 @@ echo +
 echo + Press any key to close this window
 pause > NUL
 echo +
+if "%INLINE%" == "1" exit /B
 exit
