@@ -97,6 +97,8 @@ public class IBController {
 
   private final ExecutorService cachedThreadPool;
   private final ScheduledExecutorService scheduledExecutorService;
+  private final TwsSettingsSaver twsSettingsSaver;
+  private final Encryptor encryptor;
 
   /**
    * starts up the TWS app.
@@ -109,22 +111,24 @@ public class IBController {
    * @throws java.lang.Exception
    */
 
-  private IBController(String[] args, Encryptor encryptor) throws Exception {
+  protected IBController(String[] args, Encryptor encryptor) throws Exception {
     cachedThreadPool = Executors.newCachedThreadPool();
     scheduledExecutorService = Executors.newScheduledThreadPool(4);
-    setupDefaultEnvironment(args, false);
+    twsSettingsSaver = new TwsSettingsSaver(scheduledExecutorService);
+    this.encryptor = encryptor;
   }
 
   public static void main(final String[] args) throws Exception {
     Encryptor encryptor = new Encryptor();
     checkArguments(args, encryptor);
     IBController ibController = new IBController(args, encryptor);
+    ibController.setupDefaultEnvironment(args, false);
     ibController.load();
   }
 
   void setupDefaultEnvironment(final String[] args, final boolean isGateway) throws Exception {
     Settings.initialise(new DefaultSettings(args));
-    LoginManager.initialise(new DefaultLoginManager(args));
+    LoginManager.initialise(new DefaultLoginManager(args, encryptor));
     MainWindowManager.initialise(new DefaultMainWindowManager(isGateway));
     TradingModeManager.initialise(new DefaultTradingModeManager(args));
   }
@@ -195,8 +199,6 @@ public class IBController {
     startShutdownTimerIfRequired(isGateway);
 
     createToolkitListener();
-
-    startSavingTwsSettingsAutomatically();
 
     startTwsOrGateway(isGateway);
   }
@@ -309,7 +311,7 @@ public class IBController {
   }
 
   private void startIBControllerServer(boolean isGateway) {
-    cachedThreadPool.execute(new IBControllerServer(isGateway));
+    cachedThreadPool.execute(new IBControllerServer(isGateway, cachedThreadPool, scheduledExecutorService));
   }
 
   private void startShutdownTimerIfRequired(boolean isGateway) {
@@ -320,7 +322,7 @@ public class IBController {
       scheduledExecutorService.schedule(new Runnable() {
         @Override
         public void run() {
-          cachedThreadPool.execute(new StopTask(null));
+          cachedThreadPool.execute(new StopTask(null, cachedThreadPool, scheduledExecutorService));
         }
       }, delay, TimeUnit.MILLISECONDS);
     }
@@ -354,10 +356,6 @@ public class IBController {
     int portNumber = Settings.settings().getInt("ForceTwsApiPort", 0);
     if (portNumber != 0) (new ConfigurationTask(new ConfigureTwsApiPortTask(portNumber), cachedThreadPool)).executeAsync();
     Utils.sendConsoleOutputToTwsLog(!Settings.settings().getBoolean("LogToConsole", false));
-  }
-
-  private void startSavingTwsSettingsAutomatically() {
-    TwsSettingsSaver.getInstance().initialise();
   }
 
 }

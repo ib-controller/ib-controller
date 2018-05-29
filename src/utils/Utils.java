@@ -32,6 +32,7 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
 
+import utils.executors.GuiDeferredExecutor;
 import window.manager.MainWindowManager;
 
 public class Utils {

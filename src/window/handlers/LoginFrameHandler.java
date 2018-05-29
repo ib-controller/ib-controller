@@ -24,6 +24,8 @@ import javax.swing.JFrame;
 
 import utils.IBControllerException;
 import utils.Settings;
+import utils.SwingUtils;
+import window.manager.JtsIniManager;
 import window.manager.LoginManager;
 
 final public class LoginFrameHandler extends AbstractLoginHandler {

@@ -25,6 +25,7 @@ import javax.swing.JRadioButton;
 
 import utils.IBControllerException;
 import utils.Settings;
+import utils.SwingUtils;
 import window.manager.LoginManager;
 
 final public class GatewayLoginFrameHandler extends AbstractLoginHandler {

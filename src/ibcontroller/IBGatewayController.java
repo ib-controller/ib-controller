@@ -10,21 +10,26 @@
 
 // IBController is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with IBController.  If not, see <http://www.gnu.org/licenses/>.
+// along with IBController. If not, see <http://www.gnu.org/licenses/>.
 
 package ibcontroller;
 
-import static ibcontroller.IBController.checkArguments;
-import static ibcontroller.IBController.setupDefaultEnvironment;
+import utils.Encryptor;
 
-public class IBGatewayController {
-    public static void main(String[] args) throws Exception {
-        checkArguments(args);
-        setupDefaultEnvironment(args, true);
-        IBController.load();
-    }
+public class IBGatewayController extends IBController {
+  private IBGatewayController(String[] args, Encryptor encryptor) throws Exception {
+    super(args, encryptor);
+  }
+
+  public static void main(final String[] args) throws Exception {
+    Encryptor encryptor = new Encryptor();
+    checkArguments(args, encryptor);
+    IBGatewayController ibController = new IBGatewayController(args, encryptor);
+    ibController.setupDefaultEnvironment(args, true);
+    ibController.load();
+  }
 }

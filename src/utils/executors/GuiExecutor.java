@@ -10,29 +10,34 @@
 
 // IBController is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with IBController.  If not, see <http://www.gnu.org/licenses/>.
+// along with IBController. If not, see <http://www.gnu.org/licenses/>.
 
 package utils.executors;
 
 import java.util.concurrent.Executor;
+
 import javax.swing.SwingUtilities;
 
-class GuiExecutor implements Executor {
-    private static final GuiExecutor instance = new GuiExecutor();
+public class GuiExecutor implements Executor {
+  private static final GuiExecutor instance = new GuiExecutor();
 
-    private GuiExecutor() {}
+  private GuiExecutor() {
+  }
 
-    static GuiExecutor instance() {return instance;}
+  public static GuiExecutor instance() {
+    return instance;
+  }
 
-    public void execute(Runnable task) {
-        if (SwingUtilities.isEventDispatchThread()) {
-            task.run();
-        } else {
-            SwingUtilities.invokeLater(task);
-        }
+  @Override
+  public void execute(Runnable task) {
+    if (SwingUtilities.isEventDispatchThread()) {
+      task.run();
+    } else {
+      SwingUtilities.invokeLater(task);
     }
+  }
 }

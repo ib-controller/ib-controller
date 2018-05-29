@@ -27,6 +27,7 @@ import java.util.Date;
 import javax.swing.JFrame;
 
 import utils.Settings;
+import utils.SwingUtils;
 import utils.Utils;
 import window.WindowHandler;
 

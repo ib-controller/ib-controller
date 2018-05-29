@@ -23,6 +23,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
+import utils.SwingUtils;
 import utils.Utils;
 import window.WindowHandler;
 

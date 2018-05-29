@@ -28,6 +28,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import utils.Settings;
+import utils.SwingUtils;
 import utils.Utils;
 
 public class TwsListener

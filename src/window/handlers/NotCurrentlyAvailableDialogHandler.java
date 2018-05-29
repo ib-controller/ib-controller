@@ -25,6 +25,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import utils.SwingUtils;
 import utils.Utils;
 import window.WindowHandler;
 import window.manager.LoginManager;

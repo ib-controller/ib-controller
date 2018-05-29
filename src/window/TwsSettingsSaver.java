@@ -34,15 +34,12 @@ import utils.Utils;
 import window.manager.MainWindowManager;
 
 public class TwsSettingsSaver {
-  private static final TwsSettingsSaver instance = new TwsSettingsSaver();
   private static final DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+  private final ScheduledExecutorService scheduledExecutorService;
 
-  private TwsSettingsSaver() {
+  public TwsSettingsSaver(ScheduledExecutorService scheduledExecutorService) {
+    this.scheduledExecutorService = scheduledExecutorService;
   };
-
-  public static TwsSettingsSaver getInstance() {
-    return instance;
-  }
 
   public void initialise() {
     // setting format: SaveTwsSettingsAt=hh:mm [hh:mm]...
@@ -152,7 +149,7 @@ public class TwsSettingsSaver {
     return cal;
   }
 
-  private static void scheduleSave(Date saveTime, ScheduledExecutorService scheduledExecutorService) {
+  private void scheduleSave(Date saveTime) {
     Utils.logToConsole("Tws settings will be saved at " + dateFormat.format(saveTime));
 
     scheduledExecutorService.scheduleAtFixedRate(

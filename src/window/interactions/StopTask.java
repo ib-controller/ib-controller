@@ -20,12 +20,14 @@ package window.interactions;
 
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JFrame;
 
 import api.CommandChannel;
-import utils.MyCachedThreadPool;
-import utils.MyScheduledExecutorService;
+import utils.SwitchLock;
 import window.manager.MainWindowManager;
 
 public class StopTask
@@ -34,9 +36,13 @@ public class StopTask
   private static final SwitchLock _Running = new SwitchLock();
 
   private final CommandChannel mChannel;
+  private final Executor executor;
+  private final ScheduledExecutorService scheduledExecutorService;
 
-  public StopTask(final CommandChannel channel) {
+  public StopTask(final CommandChannel channel, Executor executor, ScheduledExecutorService scheduledExecutorService) {
     mChannel = channel;
+    this.executor = executor;
+    this.scheduledExecutorService = scheduledExecutorService;
   }
 
   @Override
@@ -47,8 +53,8 @@ public class StopTask
     }
 
     try {
-      MyCachedThreadPool.getInstance().shutdownNow();
-      MyScheduledExecutorService.getInstance().shutdownNow();
+      ((ExecutorService) executor).shutdownNow();
+      scheduledExecutorService.shutdownNow();
 
       writeInfo("Closing IBController");
       stop();

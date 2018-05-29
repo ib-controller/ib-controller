@@ -10,11 +10,11 @@
 
 // IBController is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with IBController.  If not, see <http://www.gnu.org/licenses/>.
+// along with IBController. If not, see <http://www.gnu.org/licenses/>.
 
 package window.interactions;
 
@@ -22,34 +22,35 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import javax.swing.JFrame;
 
-class GetMainWindowTask implements Callable<JFrame>{
-    private volatile JFrame mMainWindow;
-    private final Lock lock = new ReentrantLock();
-    private final Condition gotFrame = lock.newCondition();
+public class GetMainWindowTask implements Callable<JFrame> {
+  private volatile JFrame mMainWindow;
+  private final Lock lock = new ReentrantLock();
+  private final Condition gotFrame = lock.newCondition();
 
-    @Override
-    public JFrame call() throws InterruptedException {
-        lock.lock();
-        try {
-            while (mMainWindow == null) {
-                gotFrame.await();
-            }
-        } finally {
-            lock.unlock();
-        }
-        return mMainWindow;
-    }  
-    
-    void setMainWindow(JFrame window) {
-        lock.lock();
-        try {
-            mMainWindow = window;
-            gotFrame.signal();
-        } finally {
-            lock.unlock();
-        }
+  @Override
+  public JFrame call() throws InterruptedException {
+    lock.lock();
+    try {
+      while (mMainWindow == null) {
+        gotFrame.await();
+      }
+    } finally {
+      lock.unlock();
     }
+    return mMainWindow;
+  }
+
+  public void setMainWindow(JFrame window) {
+    lock.lock();
+    try {
+      mMainWindow = window;
+      gotFrame.signal();
+    } finally {
+      lock.unlock();
+    }
+  }
 
 }

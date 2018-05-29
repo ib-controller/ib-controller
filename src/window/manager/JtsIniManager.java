@@ -32,9 +32,9 @@ import utils.Utils;
 
 public class JtsIniManager {
 
-  final static String LogonSectionHeader = "[Logon]";
+  public final static String LogonSectionHeader = "[Logon]";
   final static String IBGatewaySectionHeader = "[IBGateway]";
-  final static String S3storeSetting = "s3store";
+  public final static String S3storeSetting = "s3store";
   static String S3storeFalseSetting = S3storeSetting + "=false";
   static String S3storeTrueSetting = S3storeSetting + "=true";
   final static String ApiOnlySetting = "ApiOnly";
@@ -90,7 +90,7 @@ public class JtsIniManager {
     }
   }
 
-  static String getSetting(String section, String setting) {
+  public static String getSetting(String section, String setting) {
     String key = setting + "=";
     boolean found = false;
     String l = "";
@@ -112,7 +112,7 @@ public class JtsIniManager {
     return value;
   }
 
-  static void reload() {
+  public static void reload() {
     loadIniFile();
   }
 

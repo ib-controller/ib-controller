@@ -10,11 +10,11 @@
 
 // IBController is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with IBController.  If not, see <http://www.gnu.org/licenses/>.
+// along with IBController. If not, see <http://www.gnu.org/licenses/>.
 
 package window.interactions;
 
@@ -26,45 +26,46 @@ import utils.IBControllerException;
 import utils.SwingUtils;
 import utils.Utils;
 
-class EnableApiTask implements ConfigurationAction{
+public class EnableApiTask implements ConfigurationAction {
 
-    private final CommandChannel mChannel;
+  private final CommandChannel mChannel;
 
-    private JDialog configDialog;
+  private JDialog configDialog;
 
-    EnableApiTask(final CommandChannel channel) {
-        mChannel = channel;
+  public EnableApiTask(final CommandChannel channel) {
+    mChannel = channel;
+  }
+
+  @Override
+  public void run() {
+    try {
+      Utils.logToConsole("Doing ENABLEAPI configuration");
+
+      if (!Utils.selectConfigSection(configDialog, new String[] { "API", "Settings" }))
+        // older versions of TWS don't have the Settings node below the API node
+        Utils.selectConfigSection(configDialog, new String[] { "API" });
+
+      JCheckBox cb = SwingUtils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
+      if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
+
+      if (!cb.isSelected()) {
+        cb.doClick();
+        SwingUtils.clickButton(configDialog, "OK");
+        Utils.logToConsole("TWS has been configured to accept API connections");
+        mChannel.writeAck("configured");
+      } else {
+        Utils.logToConsole("TWS is already configured to accept API connections");
+        mChannel.writeAck("already configured");
+      }
+    } catch (IBControllerException e) {
+      Utils.logError("IBControllerServer: " + e.getMessage());
+      mChannel.writeNack(e.getMessage());
     }
+  }
 
-    @Override public void run() {
-        try {
-            Utils.logToConsole("Doing ENABLEAPI configuration");
-            
-            if (!Utils.selectConfigSection(configDialog, new String[] {"API","Settings"}))
-                // older versions of TWS don't have the Settings node below the API node
-                Utils.selectConfigSection(configDialog, new String[] {"API"});
-
-            JCheckBox cb = SwingUtils.findCheckBox(configDialog, "Enable ActiveX and Socket Clients");
-            if (cb == null) throw new IBControllerException("could not find Enable ActiveX checkbox");
-
-            if (!cb.isSelected()) {
-                cb.doClick();
-                SwingUtils.clickButton(configDialog, "OK");
-                Utils.logToConsole("TWS has been configured to accept API connections");
-                mChannel.writeAck("configured");
-            } else {
-                Utils.logToConsole("TWS is already configured to accept API connections");
-                mChannel.writeAck("already configured");
-            }
-        } catch (IBControllerException e) {
-            Utils.logError("IBControllerServer: " + e.getMessage());
-            mChannel.writeNack(e.getMessage());
-        }
-    }
-
-    @Override
-    public void initialise(JDialog configDialog) {
-        this.configDialog = configDialog;
-    }
+  @Override
+  public void initialise(JDialog configDialog) {
+    this.configDialog = configDialog;
+  }
 
 }

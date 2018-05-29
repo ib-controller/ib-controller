@@ -24,6 +24,7 @@ import java.util.concurrent.FutureTask;
 import javax.swing.JDialog;
 
 import utils.Utils;
+import utils.executors.GuiExecutor;
 import window.manager.ConfigDialogManager;
 
 public class ConfigurationTask {

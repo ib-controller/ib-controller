@@ -38,7 +38,7 @@ final public class CommandChannel {
   private BufferedReader mInstream = null;
   private BufferedWriter mOutstream = null;
 
-  CommandChannel(Socket socket) {
+  public CommandChannel(Socket socket) {
 
     mSocket = socket;
     if (!setupStreams()) return;
@@ -90,15 +90,15 @@ final public class CommandChannel {
     return cmd;
   }
 
-  void writeAck(String info) {
+  public void writeAck(String info) {
     replyLine("OK " + info);
   }
 
-  final void writeInfo(String info) {
+  public final void writeInfo(String info) {
     if (!_SuppressInfo) replyLine("INFO " + info);
   }
 
-  void writeNack(String info) {
+  public void writeNack(String info) {
     replyLine("ERROR " + info);
   }
 

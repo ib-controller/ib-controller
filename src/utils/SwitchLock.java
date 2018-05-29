@@ -10,29 +10,31 @@
 
 // IBController is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
 // You should have received a copy of the GNU General Public License
-// along with IBController.  If not, see <http://www.gnu.org/licenses/>.
+// along with IBController. If not, see <http://www.gnu.org/licenses/>.
 
 package utils;
 
-class SwitchLock {
-    private boolean mIsSet;
+public class SwitchLock {
+  private boolean mIsSet;
 
-    synchronized void clear() {mIsSet = false;}
-    
-    synchronized boolean set() {
-        if (mIsSet) {
-            return false;
-        } else {
-            mIsSet = true;
-            return true;
-        }
+  synchronized void clear() {
+    mIsSet = false;
+  }
+
+  public synchronized boolean set() {
+    if (mIsSet) {
+      return false;
+    } else {
+      mIsSet = true;
+      return true;
     }
-    
-    synchronized boolean query() {
-        return mIsSet;
-    }
+  }
+
+  public synchronized boolean query() {
+    return mIsSet;
+  }
 }

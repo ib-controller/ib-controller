@@ -24,6 +24,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import utils.SwingUtils;
 import utils.Utils;
 import window.WindowHandler;
 

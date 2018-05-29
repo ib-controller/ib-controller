@@ -54,7 +54,7 @@ public class SwingUtils {
    *          The button's label.
    * @return true if the button was found; false if the button was not found
    */
-  static boolean clickButton(final Window window, final String buttonText) {
+  public static boolean clickButton(final Window window, final String buttonText) {
     final JButton button = findButton(window, buttonText);
     if (button == null) return false;
 
@@ -78,7 +78,7 @@ public class SwingUtils {
    *          the label of the button to be found
    * @return the button, if was found; otherwise null
    */
-  static JButton findButton(Container container, String text) {
+  public static JButton findButton(Container container, String text) {
     ComponentIterator iter = new ComponentIterator(container);
     while (iter.hasNext()) {
       Component component = iter.next();
@@ -116,7 +116,7 @@ public class SwingUtils {
    *          0, the next by 1, etc)
    * @return the required JComboBox if it is found, otherwise null
    */
-  static JComboBox<?> findComboBox(Container container, int ith) {
+  public static JComboBox<?> findComboBox(Container container, int ith) {
     ComponentIterator iter = new ComponentIterator(container);
     int i = 0;
     while (iter.hasNext()) {
@@ -155,7 +155,7 @@ public class SwingUtils {
    *          the label of the radio button to be found
    * @return the radio button, if it was found; otherwise null
    */
-  static JRadioButton findRadioButton(Container container, String text) {
+  public static JRadioButton findRadioButton(Container container, String text) {
     ComponentIterator iter = new ComponentIterator(container);
     while (iter.hasNext()) {
       Component component = iter.next();
@@ -174,7 +174,7 @@ public class SwingUtils {
    *          the substring to find in a JLabel
    * @return the JLabel, if it was found; otherwise null
    */
-  static JLabel findLabel(Container container, String text) {
+  public static JLabel findLabel(Container container, String text) {
     ComponentIterator iter = new ComponentIterator(container);
     while (iter.hasNext()) {
       Component component = iter.next();
@@ -299,7 +299,7 @@ public class SwingUtils {
    *          the required menu path
    * @return the JMenuItem at the specified path, if found; otherwise null
    */
-  static JMenuItem findMenuItemInAnyMenuBar(Container container, String[] path) {
+  public static JMenuItem findMenuItemInAnyMenuBar(Container container, String[] path) {
     if (path.length == 0) return null;
 
     int i = 0;
@@ -344,7 +344,7 @@ public class SwingUtils {
    *          the Container to search in
    * @return the first JOptionPane, if one was found; otherwise null
    */
-  static JOptionPane findOptionPane(Container container) {
+  public static JOptionPane findOptionPane(Container container) {
     ComponentIterator iter = new ComponentIterator(container);
     while (iter.hasNext()) {
       Component component = iter.next();
@@ -450,7 +450,7 @@ public class SwingUtils {
    * @param window
    *          The Window whose structure is to be returned.
    */
-  static String getWindowStructure(Window window) {
+  public static String getWindowStructure(Window window) {
     StringBuilder builder = new StringBuilder();
     for (Component component : window.getComponents())
       appendComponentStructure(component, builder);
@@ -470,7 +470,7 @@ public class SwingUtils {
    *          true to set the JCheckBox; false to clear it
    * @return true if the JCheckBox was found; otherwise false
    */
-  static boolean setCheckBoxSelected(Window window, String buttonText, final boolean value) {
+  public static boolean setCheckBoxSelected(Window window, String buttonText, final boolean value) {
     final JCheckBox cb = findCheckBox(window, buttonText);
     if (cb == null) return false;
     cb.setSelected(value);
@@ -488,7 +488,7 @@ public class SwingUtils {
    *          true to set the JRadioButton ; false to clear it
    * @return true if the JRadioButton was found; otherwise false
    */
-  static boolean setRadioButtonSelected(Window window, String buttonText) {
+  public static boolean setRadioButtonSelected(Window window, String buttonText) {
     final JRadioButton rb = findRadioButton(window, buttonText);
     if (rb == null) return false;
 
@@ -509,7 +509,7 @@ public class SwingUtils {
    *          the value to be set in the JTextField
    * @return true if the required JTextField was found; otherwise false
    */
-  static boolean setTextField(Window window, int fieldNumber, final String value) {
+  public static boolean setTextField(Window window, int fieldNumber, final String value) {
     final JTextField tf = findTextField(window, fieldNumber);
     if (tf != null) {
       tf.setText(value);
@@ -528,7 +528,7 @@ public class SwingUtils {
    *          the text to be searched for
    * @return true if the window's title contains text, otherwise false
    */
-  static boolean titleContains(Window window, String text) {
+  public static boolean titleContains(Window window, String text) {
     String title = getWindowTitle(window);
     return (title != null && title.contains(text));
   }
@@ -543,12 +543,12 @@ public class SwingUtils {
    *          the text to be searched for
    * @return true if the window's title equals text, otherwise false
    */
-  static boolean titleEquals(Window window, String text) {
+  public static boolean titleEquals(Window window, String text) {
     String title = getWindowTitle(window);
     return (title != null && title.equals(text));
   }
 
-  static String windowEventToString(int eventID) {
+  public static String windowEventToString(int eventID) {
     switch (eventID) {
       case WindowEvent.WINDOW_ACTIVATED:
         return "Activated";
