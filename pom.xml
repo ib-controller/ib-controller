@@ -5,7 +5,7 @@
 	<artifactId>ib-controller</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<properties>
-		<jts4launch.path>C:\Jts\963\jars\jts4launch-963.jar</jts4launch.path>
+		<ib.api.jars.path>C:\Jts\ibgateway\963\jars\</ib.api.jars.path>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -23,10 +23,17 @@
 	<dependencies>
 		<dependency>
 			<artifactId>LocalTWSJar</artifactId>
-			<groupId>LocalTWSJar</groupId>
+			<groupId>jts4launch</groupId>
 			<version>963</version>
 			<scope>system</scope>
-			<systemPath>${jts4launch.path}</systemPath>
+			<systemPath>${ib.api.jars.path}/jts4launch-963.jar</systemPath>
+		</dependency>
+		<dependency>
+			<artifactId>LocalTWSJar</artifactId>
+			<groupId>twslaunch</groupId>
+			<version>963</version>
+			<scope>system</scope>
+			<systemPath>${ib.api.jars.path}/twslaunch-963.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>
