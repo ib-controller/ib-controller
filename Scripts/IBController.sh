@@ -300,7 +300,7 @@ for jar in "${jars}"/*.jar; do
 	fi
 	ibc_classpath="${ibc_classpath}${jar}"
 done
-ibc_classpath="${ibc_classpath}:${ibc_path}/IBController.jar"
+ibc_classpath="${ibc_classpath}:${ibc_path}/ib-controller-0.0.1-SNAPSHOT.jar"
 
 echo -e "Classpath=$ibc_classpath"
 echo
