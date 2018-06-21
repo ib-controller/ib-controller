@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# this is a hopefully temporary hack!
+apt-get update
 apt-get install xvfb
 
 chmod u+x Scripts/IBController.sh
