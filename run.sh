@@ -2,7 +2,7 @@
 
 # this is a hopefully temporary hack!
 apt-get update
-apt-get install xvfb
+apt-get -y install xvfb
 
 chmod u+x Scripts/IBController.sh
 
