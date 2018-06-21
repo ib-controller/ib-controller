@@ -2,7 +2,7 @@
 
 # this is a hopefully temporary hack!
 apt-get update
-apt-get -y install xvfb libxrender1
+apt-get -y install xvfb libxrender1 libxtst6
 
 chmod u+x Scripts/IBController.sh
 
