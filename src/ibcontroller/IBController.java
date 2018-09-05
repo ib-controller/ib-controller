@@ -62,6 +62,7 @@ import window.handlers.NonBrokerageAccountDialogHandler;
 import window.handlers.NotCurrentlyAvailableDialogHandler;
 import window.handlers.PasswordExpiryWarningFrameHandler;
 import window.handlers.ReloginDialogHandler;
+import window.handlers.SecondFactorAuthenticationHandler;
 import window.handlers.SecurityCodeDialogHandler;
 import window.handlers.SplashFrameHandler;
 import window.handlers.TipOfTheDayDialogHandler;
@@ -232,6 +233,7 @@ public class IBController {
     windowHandlers.add(new ReloginDialogHandler());
     windowHandlers.add(new NonBrokerageAccountDialogHandler());
     windowHandlers.add(new ExitConfirmationDialogHandler());
+    windowHandlers.add(new SecondFactorAuthenticationHandler());
 
     return windowHandlers;
   }
