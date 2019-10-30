@@ -19,21 +19,30 @@
 package ibcontroller;
 
 import java.awt.Window;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 
 final class LoginFrameHandler extends AbstractLoginHandler {
 
-    @Override
+	@Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JFrame)) return false;
 
-        // we check for the presence of the Login button because 
-        // TWS displays a different (information-only) dialog, also 
+        // we check for the presence of the Login button because
+        // TWS displays a different (information-only) dialog, also
         // entitled Login, when it's trying to reconnect
-        return ((SwingUtils.titleEquals(window, "New Login") ||
-                SwingUtils.titleEquals(window, "Login")) &&
-                SwingUtils.findButton(window, "Login") != null);
+        return ((SwingUtils.titleEquals(window, "New Login") || SwingUtils.titleEquals(window, "Login"))
+        		&& findLoginButton(window)!=null);
     }
+
+	@Override
+	protected JButton findLoginButton(Window window) {
+		JButton result = SwingUtils.findButton(window, "Login");
+		if (result==null)
+			result=SwingUtils.findButton(window, "Log In");
+		return result;
+	}
 
     @Override
     protected final boolean initialise(final Window window, int eventID) throws IBControllerException {

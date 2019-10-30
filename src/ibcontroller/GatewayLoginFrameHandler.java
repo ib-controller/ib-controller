@@ -19,17 +19,24 @@
 package ibcontroller;
 
 import java.awt.Window;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JRadioButton;
 
 final class GatewayLoginFrameHandler extends AbstractLoginHandler {
-    
+
     @Override
     public boolean recogniseWindow(Window window) {
         if (! (window instanceof JFrame)) return false;
 
         return (SwingUtils.titleContains(window, "IB Gateway") &&
-               (SwingUtils.findButton(window, "Login") != null));
+               (findLoginButton(window) != null));
+    }
+
+    @Override
+    protected JButton findLoginButton(Window window) {
+    	return SwingUtils.findButton(window, "Login");
     }
 
     @Override

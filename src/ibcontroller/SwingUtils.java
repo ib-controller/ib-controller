@@ -57,16 +57,20 @@ class SwingUtils {
         final JButton button = findButton(window, buttonText);
         if (button == null) return false;
 
-        if (! button.isEnabled()) {
+        return clickButton(button);
+    }
+
+	 static boolean clickButton(final JButton button) {
+		if (! button.isEnabled()) {
             button.setEnabled(true);
-            Utils.logToConsole("Button was disabled, has been enabled: " + buttonText);
+            Utils.logToConsole("Button was disabled, has been enabled: " + button.getText());
         }
 
-        Utils.logToConsole("Click button: " + buttonText);
+        Utils.logToConsole("Click button: " + button.getText());
         button.doClick();
-        if (! button.isEnabled()) Utils.logToConsole("Button now disabled: " + buttonText);
+        if (! button.isEnabled()) Utils.logToConsole("Button now disabled: " + button.getText());
         return true;
-    }
+	}
 
     /**
      * Traverses a container hierarchy and returns the button with

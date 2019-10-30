@@ -20,6 +20,8 @@ package ibcontroller;
 
 import java.awt.Window;
 import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
@@ -52,18 +54,21 @@ public abstract class AbstractLoginHandler implements WindowHandler {
     
     @Override
     public abstract boolean recogniseWindow(Window window);
+
     
     private void doLogin(final Window window) throws IBControllerException {
-        if (SwingUtils.findButton(window, "Login") == null) throw new IBControllerException("Login button");
+        if (findLoginButton(window) == null) throw new IBControllerException("Login button");
 
         GuiDeferredExecutor.instance().execute(new Runnable() {
             @Override
             public void run() {
-                SwingUtils.clickButton(window, "Login");
+                SwingUtils.clickButton(findLoginButton(window));
             }
         });
     }
-    
+
+    protected abstract JButton findLoginButton(Window window);
+
     protected abstract boolean initialise(final Window window, int eventID) throws IBControllerException;
     
     protected abstract boolean preLogin(final Window window, int eventID) throws IBControllerException;
