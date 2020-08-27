@@ -35,5 +35,30 @@
 			<scope>system</scope>
 			<systemPath>${ib.api.jars.path}/twslaunch-963.jar</systemPath>
 		</dependency>
+        <dependency>
+          <groupId>io.github.ma1uta.matrix</groupId>
+          <artifactId>client-impl</artifactId>
+          <version>0.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-client-microprofile</artifactId>
+            <version>4.4.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson2-provider</artifactId>
+            <version>4.4.2.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.ma1uta.matrix</groupId>
+            <artifactId>jackson-support</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.3</version>
+        </dependency>
 	</dependencies>
 </project>

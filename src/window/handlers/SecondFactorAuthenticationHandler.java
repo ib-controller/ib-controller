@@ -22,23 +22,38 @@ import java.awt.Window;
 import java.awt.event.WindowEvent;
 import java.time.Duration;
 import java.time.Instant;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JDialog;
-
+import io.github.ma1uta.matrix.client.StandaloneClient;
+import utils.Settings;
 import utils.SwingUtils;
 import window.WindowHandler;
 
 public class SecondFactorAuthenticationHandler implements WindowHandler {
   Instant lastWindowOpened = Instant.MIN;
+  Pattern codePattern = Pattern.compile(
+      "<html>If you did not receive the notification, enter this challenge in the <br>IB Key app: &nbsp;&nbsp;&nbsp;<strong style='font-size:110%;'>([0-9 ]+)</strong>&nbsp;&nbsp;&nbsp; Then enter the response below and click OK.</html>");
+  StandaloneClient mxClient;
+
+  public SecondFactorAuthenticationHandler() {
+    mxClient =
+        new StandaloneClient.Builder().domain(Settings.settings().getString("MatrixServerName", ""))
+            .userId(Settings.settings().getString("MatrixBotName", "")).build();
+    mxClient.auth().login(
+        Settings.settings().getString("MatrixBotName", ""),
+        Settings.settings().getString("MatrixBotAuth", "").toCharArray());
+  }
 
   @Override
   public boolean filterEvent(Window window, int eventId) {
     switch (eventId) {
       case WindowEvent.WINDOW_OPENED:
         lastWindowOpened = Instant.now();
-        break;
+        return true;
       case WindowEvent.WINDOW_CLOSED:
-        if (Duration.between(lastWindowOpened, Instant.now()).compareTo(Duration.ofSeconds(3)) < 0) {
+        if (Duration.between(lastWindowOpened, Instant.now())
+            .compareTo(Duration.ofSeconds(3)) < 0) {
           System.exit(999);
         }
         break;
@@ -48,11 +63,29 @@ public class SecondFactorAuthenticationHandler implements WindowHandler {
 
   @Override
   public void handleWindow(Window window, int eventID) {
+    Matcher matcher =
+        codePattern.matcher(
+            SwingUtils
+                .findLabel(
+                    window,
+                    "If you did not receive the notification, enter this challenge in the")
+                .getText());
+    if (!matcher.matches()) {
+      System.exit(998);
+    }
+    String authCode = matcher.group(1);
+    mxClient.room().joinedRooms().getJoinedRooms().stream().forEach(
+        room -> mxClient.eventAsync()
+            .sendMessage(room, "@here IBApi need 2factor auth code is " + authCode));
+
+    SwingUtils.setTextField(window, 0, "1234");
+    SwingUtils.setTextField(window, 1, "4567");
   }
 
   @Override
   public boolean recogniseWindow(Window window) {
-    if (!(window instanceof JDialog)) return false;
+    if (!(window instanceof JDialog))
+      return false;
 
     return (SwingUtils.titleContains(window, "Second Factor Authentication"));
   }
