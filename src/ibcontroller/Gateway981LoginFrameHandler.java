@@ -20,7 +20,6 @@ package ibcontroller;
 
 import java.awt.Window;
 import javax.swing.JFrame;
-import javax.swing.JRadioButton;
 import javax.swing.JToggleButton;
 
 final class Gateway981LoginFrameHandler extends AbstractLoginHandler {
@@ -133,7 +132,7 @@ final class Gateway981LoginFrameHandler extends AbstractLoginHandler {
     }
     
     private void switchToFIX(Window window) throws IBControllerException {
-        JRadioButton button = SwingUtils.findRadioButton(window, "FIX CTCI");
+        JToggleButton button = SwingUtils.findToggleButton(window, "FIX CTCI");
         if (button == null) throw new IBControllerException("FIX CTCI toggle button");
         
         if (! button.isSelected()) button.doClick();
@@ -158,7 +157,7 @@ final class Gateway981LoginFrameHandler extends AbstractLoginHandler {
     }
     
     private void switchToLive(Window window) throws IBControllerException {
-        JRadioButton button = SwingUtils.findRadioButton(window, "Live Trading");
+        JToggleButton button = SwingUtils.findToggleButton(window, "Live Trading");
         if (button == null) throw new IBControllerException("Live Trading toggle button");
         
         if (! button.isSelected()) button.doClick();
