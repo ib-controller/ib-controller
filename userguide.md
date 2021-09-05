@@ -532,7 +532,7 @@ Windows 10. Because of this, it is advisable to set up your Scheduled Task
 differently on Windows 10: see the next section _Running under Task Scheduler 
 on Windows 10_.
 
-**IMPORTANT Make sure you use the /INLINE argument to IBControllerStart.bat or 
+**IMPORTANT** Make sure you use the /INLINE argument to IBControllerStart.bat or
 IBControllerGatewayStart.bat when starting IBController from Task Scheduler.
 Otherwise IBController will start and run correctly, but Task Scheduler will not
 be aware of it: in particular Task Scheduler will not show the task as running. 

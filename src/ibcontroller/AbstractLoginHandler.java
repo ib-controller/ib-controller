@@ -53,7 +53,7 @@ public abstract class AbstractLoginHandler implements WindowHandler {
     @Override
     public abstract boolean recogniseWindow(Window window);
     
-    private void doLogin(final Window window) throws IBControllerException {
+    protected void doLogin(final Window window) throws IBControllerException {
         if (SwingUtils.findButton(window, "Login") == null) throw new IBControllerException("Login button");
 
         GuiDeferredExecutor.instance().execute(new Runnable() {
@@ -81,7 +81,7 @@ public abstract class AbstractLoginHandler implements WindowHandler {
         if (! SwingUtils.setTextField(window, credentialIndex, value)) throw new IBControllerException(credentialName);
     }
     
-    protected final void setTradingModeCombo(final Window window) {
+    protected void setTradingModeCombo(final Window window) throws IBControllerException {
         if (SwingUtils.findLabel(window, "Trading Mode") != null)  {
             JComboBox<?> tradingModeCombo;
             if (Settings.settings().getBoolean("FIX", false)) {

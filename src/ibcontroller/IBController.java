@@ -314,6 +314,7 @@ public class IBController {
         windowHandlers.add(new ExitSessionFrameHandler());
         windowHandlers.add(new LoginFrameHandler());
         windowHandlers.add(new GatewayLoginFrameHandler());
+        windowHandlers.add(new Gateway981LoginFrameHandler());
         windowHandlers.add(new MainWindowFrameHandler());
         windowHandlers.add(new GatewayMainWindowFrameHandler());
         windowHandlers.add(new NewerVersionDialogHandler());
