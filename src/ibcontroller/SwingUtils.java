@@ -34,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
+import javax.swing.JToggleButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -162,6 +163,25 @@ class SwingUtils {
         while (iter.hasNext()) {
             Component component = iter.next();
             if (component instanceof JRadioButton && text.equals(((JRadioButton)component).getText())) return (JRadioButton)component;
+        }
+        return null;
+    }
+
+    /**
+     * Traverses a container hierarchy and returns the toggle button with
+     * the given text.
+     * @param container
+     *  the Container to search in
+     * @param text
+     *  the label of the toggle button to be found
+     * @return
+     *  the toggle button, if it was found;  otherwise null
+     */
+    static JToggleButton findToggleButton(Container container, String text) {
+        ComponentIterator iter = new ComponentIterator(container);
+        while (iter.hasNext()) {
+            Component component = iter.next();
+            if (component instanceof JToggleButton && text.equals(((JToggleButton)component).getText())) return (JToggleButton)component;
         }
         return null;
     }
@@ -538,6 +558,7 @@ class SwingUtils {
      */
     static boolean titleContains(Window window, String text) {
         String title = getWindowTitle(window);
+        Utils.logToConsole(String.format("Comparing windows title [%s] with expected ~[%s]", title, text)); // FIXME
         return (title != null && title.contains(text));
     }
 
@@ -552,6 +573,7 @@ class SwingUtils {
      */
     static boolean titleEquals(Window window, String text) {
         String title = getWindowTitle(window);
+        Utils.logToConsole(String.format("Comparing windows title [%s] with expected =[%s]", title, text)); // FIXME
         return (title != null && title.equals(text));
     }
 
@@ -618,6 +640,11 @@ class SwingUtils {
             builder.append("{");
             builder.append("JRadioButton: "); 
             builder.append(((JRadioButton) component).getText());
+            builder.append("}");
+        }else if (component instanceof JToggleButton) {
+            builder.append("{");
+            builder.append("JToggleButton: ");
+            builder.append(((JToggleButton) component).getText());
             builder.append("}");
         } else if (component instanceof JTextField) {
             builder.append("{");
