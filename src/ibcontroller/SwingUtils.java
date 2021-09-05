@@ -558,7 +558,6 @@ class SwingUtils {
      */
     static boolean titleContains(Window window, String text) {
         String title = getWindowTitle(window);
-        Utils.logToConsole(String.format("Comparing windows title [%s] with expected ~[%s]", title, text)); // FIXME
         return (title != null && title.contains(text));
     }
 
@@ -573,7 +572,6 @@ class SwingUtils {
      */
     static boolean titleEquals(Window window, String text) {
         String title = getWindowTitle(window);
-        Utils.logToConsole(String.format("Comparing windows title [%s] with expected =[%s]", title, text)); // FIXME
         return (title != null && title.equals(text));
     }
 
@@ -641,7 +639,7 @@ class SwingUtils {
             builder.append("JRadioButton: "); 
             builder.append(((JRadioButton) component).getText());
             builder.append("}");
-        }else if (component instanceof JToggleButton) {
+        } else if (component instanceof JToggleButton) {
             builder.append("{");
             builder.append("JToggleButton: ");
             builder.append(((JToggleButton) component).getText());
